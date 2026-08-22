@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TokenGuard - Local AI Token Optimizer Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              500: '#10b981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-live {
+      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+
+  <!-- Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-white">TokenGuard <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">MVP</span></h1>
+          </div>
+          <p class="text-xs text-slate-400">Local AI Token Optimizer for Claude Code & Cursor</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-live"></span>
+          <span class="text-slate-300 font-mono">http://localhost:8080</span>
+        </div>
+        <button id="btn-trigger-sim" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-xs transition flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-bolt"></i> Simulate Request
+        </button>
+        <button id="btn-reset" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition border border-slate-700" title="Reset all stats">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
+
+    <!-- Hero Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- Card 1: Total Dollars Saved -->
+      <div class="rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-900/40 border border-slate-800 p-6 relative overflow-hidden group hover:border-emerald-500/40 transition">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition"></div>
+        <div class="flex items-center justify-between text-slate-400 mb-3">
+          <span class="text-xs font-semibold uppercase tracking-wider">Estimated Money Saved</span>
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+            <i class="fa-solid fa-dollar-sign"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="stat-dollars-saved" class="text-3xl font-extrabold text-emerald-400 tracking-tight">$0.00</span>
+          <span class="text-xs text-slate-400">USD</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-2 flex items-center gap-1">
+          <i class="fa-solid fa-arrow-trend-down text-emerald-400"></i> Direct reduction on LLM API bills
+        </p>
+      </div>
+
+      <!-- Card 2: Tokens Saved -->
+      <div class="rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-900/40 border border-slate-800 p-6 relative overflow-hidden group hover:border-teal-500/40 transition">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-teal-500/10 rounded-full blur-2xl group-hover:bg-teal-500/20 transition"></div>
+        <div class="flex items-center justify-between text-slate-400 mb-3">
+          <span class="text-xs font-semibold uppercase tracking-wider">Tokens Stripped</span>
+          <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center">
+            <i class="fa-solid fa-scissors"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="stat-tokens-saved" class="text-3xl font-extrabold text-teal-300 tracking-tight">0</span>
+          <span id="stat-percentage-saved" class="text-xs font-medium px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">0% reduced</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">Cleaned terminal noise & excess context</p>
+      </div>
+
+      <!-- Card 3: Cache Hits -->
+      <div class="rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-900/40 border border-slate-800 p-6 relative overflow-hidden group hover:border-cyan-500/40 transition">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition"></div>
+        <div class="flex items-center justify-between text-slate-400 mb-3">
+          <span class="text-xs font-semibold uppercase tracking-wider">Instant Cache Hits</span>
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+            <i class="fa-solid fa-bolt-lightning"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="stat-cache-hits" class="text-3xl font-extrabold text-cyan-300 tracking-tight">0</span>
+          <span class="text-xs text-slate-400">responses</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">Zero token cost & instant 0ms latency</p>
+      </div>
+
+      <!-- Card 4: Total Requests -->
+      <div class="rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-900/40 border border-slate-800 p-6 relative overflow-hidden group hover:border-slate-700 transition">
+        <div class="flex items-center justify-between text-slate-400 mb-3">
+          <span class="text-xs font-semibold uppercase tracking-wider">Requests Intercepted</span>
+          <div class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 flex items-center justify-center">
+            <i class="fa-solid fa-network-wired"></i>
+          </div>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="stat-total-requests" class="text-3xl font-extrabold text-white tracking-tight">0</span>
+          <span class="text-xs text-slate-400">calls</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">From Claude Code, Cursor, & SDKs</p>
+      </div>
+    </div>
+
+    <!-- Active Optimization Toggles & Setup Guide -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Optimizer Settings Panel -->
+      <div class="rounded-2xl bg-slate-900/70 border border-slate-800 p-6 space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-emerald-400"></i> Optimization Controls
+          </h2>
+          <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">Live Sync</span>
+        </div>
+
+        <div class="space-y-3 pt-1">
+          <!-- Toggle 1 -->
+          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 cursor-pointer hover:border-slate-700 transition">
+            <div>
+              <div class="text-xs font-semibold text-slate-200">Terminal Log & Error Cleaner</div>
+              <div class="text-[11px] text-slate-500">Truncate node_modules traces & ANSI colors</div>
+            </div>
+            <input type="checkbox" id="toggle-log-cleaner" checked class="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400 focus:ring-offset-slate-900 accent-emerald-500 cursor-pointer">
+          </label>
+
+          <!-- Toggle 2 -->
+          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 cursor-pointer hover:border-slate-700 transition">
+            <div>
+              <div class="text-xs font-semibold text-slate-200">Code & Whitespace Minifier</div>
+              <div class="text-[11px] text-slate-500">Strip blank lines & redundant context format</div>
+            </div>
+            <input type="checkbox" id="toggle-prompt-minifier" checked class="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400 focus:ring-offset-slate-900 accent-emerald-500 cursor-pointer">
+          </label>
+
+          <!-- Toggle 3 -->
+          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 cursor-pointer hover:border-slate-700 transition">
+            <div>
+              <div class="text-xs font-semibold text-slate-200">Local Smart Cache</div>
+              <div class="text-[11px] text-slate-500">Instant replay for repeated queries (0 tokens)</div>
+            </div>
+            <input type="checkbox" id="toggle-smart-cache" checked class="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-400 focus:ring-offset-slate-900 accent-emerald-500 cursor-pointer">
+          </label>
+        </div>
+      </div>
+
+      <!-- Quick Connect Instructions -->
+      <div class="lg:col-span-2 rounded-2xl bg-slate-900/70 border border-slate-800 p-6 space-y-4 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-teal-400"></i> Connect Your Tools (1 Line Setup)
+            </h2>
+            <span class="text-xs text-emerald-400 font-medium"><i class="fa-solid fa-check"></i> Ready to Intercept</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <!-- Option 1: Claude Code -->
+            <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 space-y-2">
+              <div class="flex items-center justify-between text-slate-400 font-sans font-semibold">
+                <span class="text-slate-200"><i class="fa-solid fa-code text-teal-400"></i> Claude Code CLI</span>
+              </div>
+              <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800/60 text-slate-300 select-all overflow-x-auto text-[11px]">
+                export ANTHROPIC_BASE_URL="http://localhost:8080"
+              </div>
+              <p class="text-[11px] font-sans text-slate-500">Paste in terminal before typing <code class="text-slate-300">claude</code></p>
+            </div>
+
+            <!-- Option 2: Cursor / Cline IDE -->
+            <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 space-y-2">
+              <div class="flex items-center justify-between text-slate-400 font-sans font-semibold">
+                <span class="text-slate-200"><i class="fa-solid fa-laptop-code text-emerald-400"></i> Cursor / Antigravity</span>
+              </div>
+              <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800/60 text-slate-300 select-all overflow-x-auto text-[11px]">
+                Base URL: http://localhost:8080/v1
+              </div>
+              <p class="text-[11px] font-sans text-slate-500">Set in IDE Model Settings (OpenAI / Anthropic)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 text-xs text-slate-400 font-sans flex items-center justify-between">
+          <span>🔒 <strong>100% Local:</strong> Prompts are optimized directly on your machine.</span>
+          <span class="text-emerald-400 font-mono text-[11px]">Zero Third-party server latency</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Live Request Stream Table -->
+    <div class="rounded-2xl bg-slate-900/70 border border-slate-800 p-6 space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-emerald-400"></i> Live Activity Stream & Optimization Log
+        </h2>
+        <span id="stream-status" class="text-xs text-slate-400 flex items-center gap-1.5 font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Listening for requests
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="text-slate-400 border-b border-slate-800 font-semibold">
+              <th class="py-3 px-4">Time</th>
+              <th class="py-3 px-4">Provider / Model</th>
+              <th class="py-3 px-4">Prompt Preview</th>
+              <th class="py-3 px-4 text-right">Original</th>
+              <th class="py-3 px-4 text-right">Optimized</th>
+              <th class="py-3 px-4 text-right">Saved</th>
+              <th class="py-3 px-4 text-right">Cost Saved</th>
+              <th class="py-3 px-4 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody id="request-table-body" class="divide-y divide-slate-800/60 font-mono">
+            <!-- Empty state placeholder -->
+            <tr id="empty-row">
+              <td colspan="8" class="py-8 text-center text-slate-500 font-sans">
+                <i class="fa-solid fa-inbox text-2xl mb-2 block text-slate-600"></i>
+                No requests intercepted yet. Click <strong>"Simulate Request"</strong> above or run Claude Code!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/60 py-4 px-6 text-center text-xs text-slate-500">
+    TokenGuard MVP • Local AI Token Optimizer & Proxy • Built for Developers Worldwide
+  </footer>
+
+  <script src="/dashboard/app.js"></script>
+</body>
+</html>

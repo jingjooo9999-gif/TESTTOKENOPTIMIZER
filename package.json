@@ -1,0 +1,42 @@
+{
+  "name": "token-guard",
+  "version": "1.0.0",
+  "description": "TokenGuard - Local AI Token Optimizer & Native Desktop App for PC and Mac",
+  "main": "dist/electron/main.js",
+  "scripts": {
+    "build:server": "tsc",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "copy:public": "node -e \"const fs=require('fs'); fs.mkdirSync('dist/src/public', {recursive:true}); fs.cpSync('src/public', 'dist/src/public', {recursive:true}); fs.mkdirSync('dist/public', {recursive:true}); fs.cpSync('src/public', 'dist/public', {recursive:true});\"",
+    "build": "npm run build:server && npm run build:electron && npm run copy:public",
+    "start": "ts-node src/index.ts",
+    "desktop": "npm run build && electron .",
+    "simulate": "node scripts/simulate-traffic.js",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "com.tokenguard.app",
+    "productName": "TokenGuard",
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "signAndEditExecutable": false,
+      "forceCodeSigning": false,
+      "target": ["dir"]
+    }
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
