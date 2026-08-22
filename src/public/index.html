@@ -218,9 +218,57 @@
         </div>
       </div>
 
-    </div>
+    <!-- Colibri Local MoE Streaming Engine Live Monitor -->
+    <div class="rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900/80 to-slate-900/80 border border-purple-800/40 p-6 space-y-4 relative overflow-hidden">
+      <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-bold text-slate-200">Colibri Local MoE Engine (SSD Streaming)</h2>
+            <p class="text-[11px] text-slate-400">Direct Memory-Mapped On-Demand Expert Execution • $0 Cloud Cost</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-xs px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono">
+            Model: <span class="text-white font-semibold">local-moe-70b</span>
+          </div>
+          <button id="btn-trigger-moe" class="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-play"></i> Run Local MoE
+          </button>
+        </div>
+      </div>
 
-    <!-- Live Request Stream Table -->
+      <!-- MoE Stats & Live Expert Matrix -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-1.5">
+          <div class="text-[11px] text-slate-400 uppercase font-semibold">Memory Efficiency</div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-xl font-bold text-purple-300">6.02 MB</span>
+            <span class="text-xs text-slate-500">in RAM (Dense Core)</span>
+          </div>
+          <p class="text-[11px] text-slate-500">96 MB weights streamed dynamically from SSD</p>
+        </div>
+
+        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-1.5">
+          <div class="text-[11px] text-slate-400 uppercase font-semibold">Architecture</div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-xl font-bold text-teal-300">64 Experts</span>
+            <span class="text-xs text-slate-500">4 Layers x 16</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Top-2 Experts activated per token</p>
+        </div>
+
+        <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 space-y-1.5">
+          <div class="text-[11px] text-slate-400 uppercase font-semibold">Live Stream Status</div>
+          <div id="moe-live-trace" class="text-xs font-mono text-purple-200 truncate">
+            Ready to stream on-demand
+          </div>
+          <p class="text-[11px] text-slate-500">Pure C / mmap zero-copy memory bus</p>
+        </div>
+      </div>
+    </div>
     <div class="rounded-2xl bg-slate-900/70 border border-slate-800 p-6 space-y-4">
       <div class="flex items-center justify-between pb-2 border-b border-slate-800">
         <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">

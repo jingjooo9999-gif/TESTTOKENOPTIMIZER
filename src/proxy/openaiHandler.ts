@@ -58,7 +58,59 @@ export async function handleOpenAIChatCompletions(req: Request, res: Response): 
     ? lastUserMsg.content.slice(0, 80) + (lastUserMsg.content.length > 80 ? '...' : '')
     : 'System prompt / instructions';
 
-  // 3. Cache Check
+  // 3. Local MoE Streaming Engine Route (Colibri SSD-Streaming)
+  if (model.toLowerCase().includes('moe') || model.toLowerCase().includes('colibri') || model === 'local-moe-70b') {
+    const { ColibriBridge } = require('../moe/colibri_bridge');
+    const moeResult = await ColibriBridge.generateMoE(rawContent);
+    const latencyMs = Date.now() - startTime;
+    const fullSavings = calculateSavings('gpt-4o', originalTokens, 0); // 100% saved!
+
+    const record: RequestRecord = {
+      id: 'req_moe_' + Math.random().toString(36).substr(2, 9),
+      timestamp: new Date().toLocaleTimeString(),
+      provider: 'openai',
+      model: 'local-moe-70b (SSD Streaming)',
+      originalTokens,
+      optimizedTokens: 0,
+      savedTokens: originalTokens,
+      percentageSaved: 100,
+      dollarsSaved: fullSavings.dollarsSaved,
+      latencyMs,
+      cached: false,
+      rulesApplied: ['Local SSD MoE Streaming (64 Experts on-demand)'],
+      promptPreview
+    };
+
+    statsStore.recordRequest(record);
+    res.setHeader('X-Token-Guard-MoE-Streaming', 'true');
+    res.setHeader('X-Token-Guard-Tokens-Saved', originalTokens.toString());
+    res.setHeader('X-Token-Guard-Dollars-Saved', fullSavings.dollarsSaved.toString());
+
+    res.json({
+      id: 'chatcmpl-moe-' + Math.random().toString(36).substr(2, 9),
+      object: 'chat.completion',
+      created: Math.floor(Date.now() / 1000),
+      model: 'local-moe-70b',
+      choices: [
+        {
+          index: 0,
+          message: {
+            role: 'assistant',
+            content: moeResult.text
+          },
+          finish_reason: 'stop'
+        }
+      ],
+      usage: {
+        prompt_tokens: originalTokens,
+        completion_tokens: moeResult.tokensGenerated,
+        total_tokens: originalTokens + moeResult.tokensGenerated
+      }
+    });
+    return;
+  }
+
+  // 4. Cache Check
   const cacheKey = localCache.generateKey(model, optimizedMessages);
   if (settings.enableSmartCache) {
     const cachedEntry = localCache.get(cacheKey);
@@ -233,8 +285,10 @@ export function handleOpenAIModels(req: Request, res: Response): void {
   res.json({
     object: 'list',
     data: [
+      { id: 'local-moe-70b', object: 'model', created: 1787400000, owned_by: 'colibri-local-engine' },
       { id: 'gpt-4o', object: 'model', created: 1715368132, owned_by: 'system' },
       { id: 'gpt-4o-mini', object: 'model', created: 1721172741, owned_by: 'system' },
+      { id: 'claude-3-5-sonnet-20241022', object: 'model', created: 1729000000, owned_by: 'anthropic' },
       { id: 'o1', object: 'model', created: 1726099999, owned_by: 'system' },
       { id: 'o3-mini', object: 'model', created: 1738000000, owned_by: 'system' }
     ]
