@@ -1,5 +1,5 @@
 @echo off
-title TokenGuard Desktop
-cd /d "%~dp0"
-start "" msedge.exe --app=http://localhost:8080/dashboard --window-size=1100,800
+title TokenGuard Desktop Application
+cd /d "Z:\TEST PROJECT"
+start "" "Z:\TEST PROJECT\release\win-unpacked\TokenGuard.exe"
 exit

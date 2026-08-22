@@ -63,22 +63,23 @@
           <i data-lucide="shield-check" class="w-6 h-6"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xl font-bold tracking-tight text-white">TokenGuard <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">Pro</span></h1>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-xl font-bold tracking-tight text-white">TokenGuard</h1>
+            <span class="text-xs text-emerald-400 font-semibold tracking-wider uppercase ml-1">Pro</span>
           </div>
           <p class="text-xs text-slate-400">Local AI Token Optimizer & Colibri MoE Suite</p>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-live"></span>
           <span class="text-slate-300 font-mono">http://localhost:8080</span>
         </div>
         <button id="btn-trigger-sim" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-xs transition flex items-center gap-1.5 shadow-sm">
           <i data-lucide="zap" class="w-4 h-4"></i> Simulate Request
         </button>
-        <button id="btn-reset" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition border border-slate-700 flex items-center justify-center" title="Reset all stats">
+        <button id="btn-reset" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs transition border border-slate-800 flex items-center justify-center" title="Reset all stats">
           <i data-lucide="rotate-cw" class="w-4 h-4"></i>
         </button>
       </div>
@@ -119,7 +120,7 @@
         </div>
         <div class="flex items-baseline gap-2">
           <span id="stat-tokens-saved" class="text-3xl font-extrabold text-teal-300 tracking-tight">0</span>
-          <span id="stat-percentage-saved" class="text-xs font-medium px-2 py-0.5 rounded bg-teal-500/20 text-teal-300">0% reduced</span>
+          <span id="stat-percentage-saved" class="text-xs font-medium text-teal-400">0% reduced</span>
         </div>
         <p class="text-xs text-slate-500 mt-2">Cleaned terminal noise & excess context</p>
       </div>
@@ -165,7 +166,9 @@
           <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
             <i data-lucide="sliders" class="w-4 h-4 text-emerald-400"></i> Optimization Controls
           </h2>
-          <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">Live Sync</span>
+          <span class="text-[11px] text-slate-400 font-mono flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live Sync
+          </span>
         </div>
 
         <div class="space-y-3 pt-1">
@@ -257,14 +260,15 @@
             <i data-lucide="brain" class="w-5 h-5"></i>
           </div>
           <div>
-            <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">
-              Colibri Local MoE Engine <span class="text-[11px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-medium">SSD Streaming</span>
-            </h2>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base font-bold text-slate-100">Colibri Local MoE Engine</h2>
+              <span class="text-xs text-purple-400 font-medium font-mono">SSD Streaming</span>
+            </div>
             <p class="text-xs text-slate-400">Direct Memory-Mapped On-Demand Expert Execution • $0 Cloud Cost</p>
           </div>
         </div>
-        <div class="flex items-center gap-3">
-          <div class="text-xs px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono">
+        <div class="flex items-center gap-4">
+          <div class="text-xs text-purple-300 font-mono flex items-center gap-1.5">
             Model: <span class="text-white font-semibold">local-moe-70b</span>
           </div>
           <button id="btn-trigger-moe" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition flex items-center gap-2 shadow-lg shadow-purple-900/30">

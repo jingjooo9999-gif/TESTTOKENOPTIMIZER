@@ -9,25 +9,25 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "$ws = New-Object -ComObject WScript.Shell; " ^
   "$desktop = [Environment]::GetFolderPath('Desktop'); " ^
   "$startMenu = [Environment]::GetFolderPath('Programs'); " ^
-  "$target = 'Z:\TEST PROJECT\TokenGuard.vbs'; " ^
+  "$target = 'Z:\TEST PROJECT\release\win-unpacked\TokenGuard.exe'; " ^
   "$shortcutDesktop = $ws.CreateShortcut((Join-Path $desktop 'TokenGuard.lnk')); " ^
-  "$shortcutDesktop.TargetPath = 'wscript.exe'; " ^
-  "$shortcutDesktop.Arguments = '\"' + $target + '\"'; " ^
+  "$shortcutDesktop.TargetPath = $target; " ^
   "$shortcutDesktop.WorkingDirectory = 'Z:\TEST PROJECT'; " ^
-  "$shortcutDesktop.Description = 'TokenGuard - AI Token Optimizer'; " ^
+  "$shortcutDesktop.Description = 'TokenGuard - AI Token Optimizer & MoE Suite'; " ^
+  "$shortcutDesktop.IconLocation = $target + ',0'; " ^
   "$shortcutDesktop.Save(); " ^
   "$shortcutStart = $ws.CreateShortcut((Join-Path $startMenu 'TokenGuard.lnk')); " ^
-  "$shortcutStart.TargetPath = 'wscript.exe'; " ^
-  "$shortcutStart.Arguments = '\"' + $target + '\"'; " ^
+  "$shortcutStart.TargetPath = $target; " ^
   "$shortcutStart.WorkingDirectory = 'Z:\TEST PROJECT'; " ^
-  "$shortcutStart.Description = 'TokenGuard - AI Token Optimizer'; " ^
+  "$shortcutStart.Description = 'TokenGuard - AI Token Optimizer & MoE Suite'; " ^
+  "$shortcutStart.IconLocation = $target + ',0'; " ^
   "$shortcutStart.Save(); " ^
-  "Write-Host '✅ Created Desktop Icon: TokenGuard' -ForegroundColor Green; " ^
+  "Write-Host '✅ Created Native Windows Desktop Icon: TokenGuard' -ForegroundColor Green; " ^
   "Write-Host '✅ Created Start Menu Shortcut: TokenGuard' -ForegroundColor Green; "
 
 echo.
 echo =================================================================
-echo   🎉 INSTALLATION COMPLETE! Starting TokenGuard Desktop App...
+echo   🎉 INSTALLATION COMPLETE! Starting Native Desktop Application...
 echo =================================================================
-wscript.exe "Z:\TEST PROJECT\TokenGuard.vbs"
+start "" "Z:\TEST PROJECT\release\win-unpacked\TokenGuard.exe"
 exit
